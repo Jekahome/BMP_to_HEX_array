@@ -1,7 +1,7 @@
 
 use std::io::Write; 
 use image::GenericImageView;
-
+use anyhow::{Context, Result};
 /// Dependencies
 /// 
 /// [dependencies]
@@ -10,19 +10,19 @@ use image::GenericImageView;
 /// Example
 ///  
 /// $ cargo run source/member.bmp
-fn main() {
+fn main() -> Result<()>{
     if std::env::args_os().len() >1 {
         let args: Vec<String> = std::env::args().collect();
         let filename = &args.last().unwrap();
         let file_path =  std::path::Path::new(filename);
         if file_path.exists() {  
-            let source = image::open(file_path).unwrap();
+            let source = image::open(file_path).context(format!("unable to open '{:?}'", file_path))?;
             let (width, height) = source.dimensions();
             let gray = source.to_luma8();
             if (width*height)%8!=0 {
                 eprintln!("For correct use of HEX, the number of pixels must be divisible by 8");
             }
-            let len:usize = ((width*height)/8).try_into().unwrap();
+            let len:usize = ((width*height)/8).try_into()?;
             let mut buf: Vec<String> = Vec::with_capacity(len);
             let mut one_unit = String::from("");
             for (_c,pix) in gray.to_vec().iter().enumerate(){    
@@ -45,16 +45,16 @@ fn main() {
                 if c%(width/8) as usize==0 {
                     println!("");
                 }
-                print!("{:#X},", u32::from_str_radix(i, 2).unwrap());
+                print!("{:#X},", u32::from_str_radix(i, 2)?);
             }
             // Output FILE
-            let out = std::fs::File::create("source/output_hex").unwrap();
+            let out = std::fs::File::create("source/output_hex")?;
             let mut buf_out = std::io::BufWriter::new(out);
             for (c,i) in buf.iter().enumerate(){
                 if c%(width/8) as usize==0 {
                    let _ = writeln!(buf_out,"");
                 }
-                write!(buf_out, "{:#X},", u32::from_str_radix(i, 2).unwrap()).unwrap();
+                write!(buf_out, "{:#X},", u32::from_str_radix(i, 2)?)?;
             }
         }else{
             eprintln!("Error:\n File {:?} not found in this scope",filename);
@@ -62,5 +62,6 @@ fn main() {
     }else{
         println!("Run:\n $cargo run source/<FILE NAME BMP>");
     }
+    Ok(())
 }
  

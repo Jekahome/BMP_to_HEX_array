@@ -18,11 +18,11 @@ fn main() {
         if file_path.exists() {  
             let source = image::open(file_path).unwrap();
             let (width, height) = source.dimensions();
-            let gray = source.to_luma();
+            let gray = source.to_luma8();
             let len:usize = ((width*height)/8).try_into().unwrap();
             let mut buf: Vec<String> = Vec::with_capacity(len);
             let mut one_unit = String::from("");
-            for (c,pix) in gray.to_vec().iter().enumerate(){    
+            for (_c,pix) in gray.to_vec().iter().enumerate(){    
                 let logic= match pix{
                     n if n > &1 => "0",
                     _ => "1"
@@ -45,19 +45,19 @@ fn main() {
                 print!("{:#X},", u32::from_str_radix(i, 2).unwrap());
             }
             // Output FILE
-            let mut out = std::fs::File::create("../output_hex").unwrap();
+            let out = std::fs::File::create("../output_hex").unwrap();
             let mut buf_out = std::io::BufWriter::new(out);
             for (c,i) in buf.iter().enumerate(){
                 if c%(width/8) as usize==0 {
-                    writeln!(buf_out,"");
+                   let _ = writeln!(buf_out,"");
                 }
                 write!(buf_out, "{:#X},", u32::from_str_radix(i, 2).unwrap()).unwrap();
             }
         }else{
-            println!("Warning:\n File {:?} not found in this scope",filename);
+            eprintln!("Error:\n File {:?} not found in this scope",filename);
         }
     }else{
-        println!("Run:\n $cargo run <PATH FILE>");
+        println!("Run:\n $cargo run <PATH FILE BMP>");
     }
 }
  

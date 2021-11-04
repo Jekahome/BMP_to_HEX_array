@@ -2,10 +2,6 @@
 use std::io::Write; 
 use image::GenericImageView;
 use anyhow::{Context, Result};
-/// Dependencies
-/// 
-/// [dependencies]
-/// image = "0.23"
 
 /// Example
 ///  

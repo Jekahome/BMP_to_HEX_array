@@ -19,6 +19,9 @@ fn main() {
             let source = image::open(file_path).unwrap();
             let (width, height) = source.dimensions();
             let gray = source.to_luma8();
+            if (width*height)%8!=0 {
+                eprintln!("For correct use of HEX, the number of pixels must be divisible by 8");
+            }
             let len:usize = ((width*height)/8).try_into().unwrap();
             let mut buf: Vec<String> = Vec::with_capacity(len);
             let mut one_unit = String::from("");

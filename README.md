@@ -3,4 +3,4 @@ Convert file .bmp to array HEX
 
 ## Example
 
-  $ cargo run ../member.bmp
+  $ cargo run source/member.bmp

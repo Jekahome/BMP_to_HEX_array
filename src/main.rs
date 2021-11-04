@@ -9,7 +9,7 @@ use image::GenericImageView;
 
 /// Example
 ///  
-/// $ cargo run ../member.bmp
+/// $ cargo run source/member.bmp
 fn main() {
     if std::env::args_os().len() >1 {
         let args: Vec<String> = std::env::args().collect();
@@ -45,7 +45,7 @@ fn main() {
                 print!("{:#X},", u32::from_str_radix(i, 2).unwrap());
             }
             // Output FILE
-            let out = std::fs::File::create("../output_hex").unwrap();
+            let out = std::fs::File::create("source/output_hex").unwrap();
             let mut buf_out = std::io::BufWriter::new(out);
             for (c,i) in buf.iter().enumerate(){
                 if c%(width/8) as usize==0 {
@@ -57,7 +57,7 @@ fn main() {
             eprintln!("Error:\n File {:?} not found in this scope",filename);
         }
     }else{
-        println!("Run:\n $cargo run <PATH FILE BMP>");
+        println!("Run:\n $cargo run source/<FILE NAME BMP>");
     }
 }
  
